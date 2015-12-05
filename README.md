@@ -92,3 +92,7 @@ func TestExample(t *testing.T) {
   }
 }
 ```
+
+## license
+
+This software is released under the MIT License, see [LICENSE](https://github.com/yoppi/gorip/blob/master/LICENSE)
