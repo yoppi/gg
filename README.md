@@ -1,14 +1,14 @@
-# gorip [![Circle CI](https://circleci.com/gh/yoppi/gorip.svg?style=svg)](https://circleci.com/gh/yoppi/gorip)
+# gg [![Circle CI](https://circleci.com/gh/yoppi/gg.svg?style=svg)](https://circleci.com/gh/yoppi/gg)
 
 Test Double library for controller test with net/http.
 A web application often use external api in action.
 But cannot use that in always, each on testing.
-`gorip` help such cases.
+`gg` help such cases.
 
 ## install
 
 ```
-$ go get github.com/yoppi/gorip
+$ go get github.com/yoppi/gg
 ```
 
 ## usage
@@ -50,7 +50,7 @@ import (
   "net/http"
   "testing"
 
-  "github.com/yoppi/gorip"
+  "github.com/yoppi/gg"
 )
 
 func response() string {
@@ -58,7 +58,7 @@ func response() string {
 }
 
 func TestExample(t *testing.T) {
-  double := gorip.Double(map[string]func() string{
+  double := gg.Double(map[string]func() string{
     "http://example.com/api/v2/test": response,
   })
   defer double.Close()
@@ -95,4 +95,4 @@ func TestExample(t *testing.T) {
 
 ## license
 
-This software is released under the MIT License, see [LICENSE](https://github.com/yoppi/gorip/blob/master/LICENSE)
+This software is released under the MIT License, see [LICENSE](https://github.com/yoppi/gg/blob/master/LICENSE)

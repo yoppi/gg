@@ -1,4 +1,4 @@
-package gorip
+package gg
 
 import (
 	"io/ioutil"
@@ -24,7 +24,7 @@ func apiResponseHandler() string {
 	return `{"test":"ok"}`
 }
 
-func TestGorip(t *testing.T) {
+func TestGG(t *testing.T) {
 	double := Double(map[string]*ResponseHandler{
 		"http://example.com/api/test": &ResponseHandler{
 			HandleFunc:  apiResponseHandler,

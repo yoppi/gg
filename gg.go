@@ -1,4 +1,4 @@
-package gorip
+package gg
 
 import (
 	"io/ioutil"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-type Gorip struct {
+type GG struct {
 	UrlHandlers map[string]*ResponseHandler
 }
 
@@ -16,14 +16,14 @@ type ResponseHandler struct {
 	ContentType string
 }
 
-func Double(urlHandlers map[string]*ResponseHandler) *Gorip {
-	self := &Gorip{urlHandlers}
+func Double(urlHandlers map[string]*ResponseHandler) *GG {
+	self := &GG{urlHandlers}
 	http.DefaultClient.Transport = self
 
 	return self
 }
 
-func (g *Gorip) RoundTrip(req *http.Request) (*http.Response, error) {
+func (g *GG) RoundTrip(req *http.Request) (*http.Response, error) {
 	if handler := g.findHandler(req.URL.String()); handler != nil {
 		body := ioutil.NopCloser(strings.NewReader(handler.HandleFunc()))
 		resp := &http.Response{
@@ -39,7 +39,7 @@ func (g *Gorip) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 }
 
-func (g *Gorip) findHandler(targetUrl string) *ResponseHandler {
+func (g *GG) findHandler(targetUrl string) *ResponseHandler {
 	for url, handler := range g.UrlHandlers {
 		if strings.Contains(targetUrl, url) {
 			return handler
@@ -48,6 +48,6 @@ func (g *Gorip) findHandler(targetUrl string) *ResponseHandler {
 	return nil
 }
 
-func (g *Gorip) Close() {
+func (g *GG) Close() {
 	http.DefaultClient.Transport = nil
 }
