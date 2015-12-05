@@ -7,25 +7,31 @@ import (
 )
 
 type Gorip struct {
-	DoubleUrlHandlers map[string]func() string
+	UrlHandlers map[string]*ResponseHandler
 }
 
-func Double(doubleUrlHandlers map[string]func() string) *Gorip {
-	self := &Gorip{doubleUrlHandlers}
+type ResponseHandler struct {
+	HandleFunc  func() string
+	Status      int
+	ContentType string
+}
+
+func Double(urlHandlers map[string]*ResponseHandler) *Gorip {
+	self := &Gorip{urlHandlers}
 	http.DefaultClient.Transport = self
 
 	return self
 }
 
 func (g *Gorip) RoundTrip(req *http.Request) (*http.Response, error) {
-	if handler := g.findDoubleHandler(req.URL.String()); handler != nil {
-		body := ioutil.NopCloser(strings.NewReader(handler()))
+	if handler := g.findHandler(req.URL.String()); handler != nil {
+		body := ioutil.NopCloser(strings.NewReader(handler.HandleFunc()))
 		resp := &http.Response{
 			Header:     make(http.Header),
 			Body:       body,
-			StatusCode: http.StatusOK,
+			StatusCode: handler.Status,
 		}
-		resp.Header.Set("Content-Type", "application/json")
+		resp.Header.Set("Content-Type", handler.ContentType)
 
 		return resp, nil
 	} else {
@@ -33,9 +39,9 @@ func (g *Gorip) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 }
 
-func (g *Gorip) findDoubleHandler(url string) func() string {
-	for doubleUrl, handler := range g.DoubleUrlHandlers {
-		if strings.Contains(url, doubleUrl) {
+func (g *Gorip) findHandler(targetUrl string) *ResponseHandler {
+	for url, handler := range g.UrlHandlers {
+		if strings.Contains(targetUrl, url) {
 			return handler
 		}
 	}

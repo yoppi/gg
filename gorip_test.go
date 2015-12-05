@@ -25,8 +25,12 @@ func apiResponseHandler() string {
 }
 
 func TestGorip(t *testing.T) {
-	double := Double(map[string]func() string{
-		"http://example.com/api/test": apiResponseHandler,
+	double := Double(map[string]*ResponseHandler{
+		"http://example.com/api/test": &ResponseHandler{
+			HandleFunc:  apiResponseHandler,
+			Status:      http.StatusOK,
+			ContentType: "application/json",
+		},
 	})
 	defer double.Close()
 
