@@ -1,4 +1,4 @@
-# gorip
+# gorip [![Circle CI](https://circleci.com/gh/yoppi/gorip.svg?style=svg)](https://circleci.com/gh/yoppi/gorip)
 
 Test Double library for controller test with net/http.
 A web application often use external api in action.
