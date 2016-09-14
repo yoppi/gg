@@ -3,7 +3,7 @@
 Test Double library for controller test with net/http.
 A web application often use external api in action.
 But cannot use that in always, each on testing.
-`gg` help such cases.
+`gg` (pronounced `double go`) help such cases.
 
 ## install
 
@@ -22,10 +22,6 @@ import (
 )
 
 var externalApi = "https://example.com/api/v2/test"
-
-type ExternalApi struct {
-  Response string
-}
 
 func TestAction(w http.ResponseWriter, r *http.Request) {
   res, _ := http.Get(externalApi)
@@ -49,6 +45,8 @@ corresponding test.
 import (
   "net/http"
   "testing"
+  "ioutil"
+  "strings"
 
   "github.com/yoppi/gg"
 )
@@ -58,38 +56,35 @@ func response() string {
 }
 
 func TestExample(t *testing.T) {
-  double := gg.Double(map[string]func() string{
-    "http://example.com/api/v2/test": response,
-  })
-  defer double.Close()
+	double := gg.Double(map[string]*gg.ResponseHandler{
+		"http://example.com/api/test": &gg.ResponseHandler{
+			HandleFunc:  apiResponseHandler,
+			Status:      http.StatusOK,
+			ContentType: "application/json",
+		},
+	})
+	defer double.Close()
 
-  ts := httptest.NewServer(http.HandlerFunc(TestAction))
-  defer ts.Close()
+	ts := httptest.NewServer(http.HandlerFunc(api))
+	defer ts.Close()
 
-  res, err := http.Get(ts.URL)
-  if err != nil {
-    t.Error("unexpected", err)
-  }
-  defer res.Body.Close()
+	res, err := http.Get(ts.URL)
+	if err != nil {
+		t.Error("unexpected", err)
+	}
+	defer res.Body.Close()
 
-  if res.StatusCode != 200 {
-    t.Error("unexpected", err)
-  }
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Error("unexpected")
+	}
 
-  body, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    t.Error("unexpected", err)
-  }
-
-  var ret &ExternalApi
-  err := json.Unmarshal(body, &ret)
-  if err != nil {
-    t.Error("unexpected", err)
-  }
-
-  if ret.Response != "test" {
-    t.Error("`Response` should be test")
-  }
+	if string(body) == "" {
+		t.Error("should have response")
+	}
+	if !strings.Contains(string(body), "\"test\":\"ok\"") {
+		t.Error("should have api reponse")
+	}
 }
 ```
 
