@@ -28,7 +28,7 @@ func TestGG(t *testing.T) {
 	double := Double(map[string]*ResponseHandler{
 		"http://example.com/api/test": &ResponseHandler{
 			HandleFunc:  apiResponseHandler,
-			Status:      http.StatusOK,
+			StatusCode:  http.StatusOK,
 			ContentType: "application/json",
 		},
 	})

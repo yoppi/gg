@@ -12,7 +12,7 @@ type GG struct {
 
 type ResponseHandler struct {
 	HandleFunc  func() string
-	Status      int
+	StatusCode  int
 	ContentType string
 }
 
@@ -29,7 +29,7 @@ func (g *GG) RoundTrip(req *http.Request) (*http.Response, error) {
 		resp := &http.Response{
 			Header:     make(http.Header),
 			Body:       body,
-			StatusCode: handler.Status,
+			StatusCode: handler.StatusCode,
 		}
 		resp.Header.Set("Content-Type", handler.ContentType)
 
